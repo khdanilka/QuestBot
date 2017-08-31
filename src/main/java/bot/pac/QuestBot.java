@@ -127,9 +127,6 @@ public class QuestBot extends TelegramLongPollingBot {
 
             currentUser = users.get(user_id);
             currentUser.setLastActiveTime(System.currentTimeMillis());
-            //currentUser.lock.lock();
-            //System.out.println("Поставили лок" +  currentUser);
-
 
             if (message_text.equals("/start") || message_text.startsWith("Главная")) {
                 currentUser.setCondition(0);
@@ -167,12 +164,6 @@ public class QuestBot extends TelegramLongPollingBot {
                 SendMessage msg = new SendMessage() // Create a message object object
                         .setChatId(currentUser.getUser_id())
                         .setText("Выберите квест");
-
-//                bd.init();
-//                ArrayList<QuestClass> arrQ = bd.getQuestListWithTag(myMap.get(message_text));
-//                currentUser.setQuestsFromArrayList(arrQ);
-//                bd.dispose();
-
 
                 currentUser.setCurrentCategory(EmojiParser.removeAllEmojis(message_text).trim());
 
@@ -240,11 +231,6 @@ public class QuestBot extends TelegramLongPollingBot {
                 InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
                 List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
 
-//                for(QuestClass q: currentUser.quests.values()) {
-//                    List<InlineKeyboardButton> rowInline = new ArrayList<>();
-//                    rowInline.add(new InlineKeyboardButton().setText(q.getName()).setCallbackData("@questname::" + q.hashCode()));
-//                    rowsInline.add(rowInline);
-//                }
                 int offset=0;
                 if (currentUser.quests.size() > 5 ) offset = 5;
                 else offset = currentUser.quests.size();
@@ -542,69 +528,6 @@ public class QuestBot extends TelegramLongPollingBot {
         currentUser.setQuestsFromArrayList(arrQ);
     }
 
-
-
-    public void onUpdateReceived1(Update update) {
-
-        // We check if the update has a message and the message has text
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String message_text = update.getMessage().getText();
-            long chat_id = update.getMessage().getChatId();
-            if (update.getMessage().getText().equals("/start")) {
-
-
-                SendMessage message = new SendMessage() // Create a message object object
-                        .setChatId(chat_id)
-                        .setText("You send /start");
-                InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-                List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-                List<InlineKeyboardButton> rowInline = new ArrayList<>();
-                rowInline.add(new InlineKeyboardButton().setText("Update message text").setCallbackData("update_msg_text"));
-                //rowInline.add(new InlineKeyboardButton().setText("Update message text").setUrl("https://telegram.org/blog/instant-view-contest-200K"));
-                // Set the keyboard to the markup
-                rowsInline.add(rowInline);
-                // Add it to the message
-                markupInline.setKeyboard(rowsInline);
-                message.setReplyMarkup(markupInline);
-                try {
-                    sendMessage(message); // Sending our message object to user
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-
-                SendPhoto msg = new SendPhoto()
-                        .setChatId(chat_id)
-                        .setPhoto("AgADAgAD36cxGwAB22FIeMyhph5ZwtT-hrcNAAQUSjaT_4mPASMtAwABAg")
-                        .setCaption("Photo");
-                //log(user_first_name, user_last_name, Long.toString(user_id), message_text, "Row 1 Button 1");
-                try {
-                    sendPhoto(msg); // Call method to send the photo
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-        } else if (update.hasCallbackQuery()) {
-            // Set variables
-            String call_data = update.getCallbackQuery().getData();
-            long message_id = update.getCallbackQuery().getMessage().getMessageId();
-            long chat_id = update.getCallbackQuery().getMessage().getChatId();
-
-            if (call_data.equals("update_msg_text")) {
-                String answer = "Updated message text yohooooo";
-                EditMessageText new_message = new EditMessageText()
-                        .setChatId(chat_id)
-                        .setMessageId(toIntExact(message_id))
-                        .setText("https://telegram.org/blog/instant-view-contest-200K");
-                try {
-                    editMessageText(new_message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     private void log(String first_name, String last_name, String user_id, String txt, String bot_answer) {
         System.out.println("\n ----------------------------");
